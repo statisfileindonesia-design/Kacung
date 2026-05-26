@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>OnePlus • Smart DB</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; background: #000; overflow-x: hidden; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #fff; display: flex; flex-direction: column; overflow-x: hidden; }
+
+    .app-bar { flex-shrink: 0; background: #0a0a0a; padding: 10px 12px; border-bottom: 2px solid #e50914; width: 100%; overflow-x: auto; }
+    .app-bar::-webkit-scrollbar { display: none; }
+    .logo-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: nowrap; }
+    .logo { font-size: 20px; font-weight: 800; background: linear-gradient(135deg, #fff, #e50914, #ffd700); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; }
+    .search-btn { background: rgba(255,255,255,0.08); border: 1px solid #ffd70055; color: #fff; padding: 5px 14px; border-radius: 30px; cursor: pointer; font-size: 11px; white-space: nowrap; }
+
+    .genre-tabs-wrapper { position: relative; display: flex; align-items: center; margin-top: 2px; }
+    .genre-scroll { overflow-x: auto; white-space: nowrap; padding: 2px 0 4px; flex: 1; scrollbar-width: none; -ms-overflow-style: none; }
+    .genre-scroll::-webkit-scrollbar { display: none; }
+    .genre-list { display: inline-flex; gap: 0; padding: 0 2px; background: rgba(255,255,255,0.02); border-radius: 40px; border: 1px solid rgba(255,255,255,0.06); }
+    .genre { background: transparent; padding: 8px 18px; border-radius: 40px; font-size: 11px; cursor: pointer; border: none; transition: all 0.25s ease; white-space: nowrap; color: #aaa; font-weight: 500; position: relative; letter-spacing: 0.3px; }
+    .genre.active { background: #e50914; color: #fff; font-weight: 700; box-shadow: 0 4px 12px rgba(229,9,20,0.5); border-color: #ffd700; transform: translateY(-1px); }
+    .genre:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.05); }
+    .genre.active::after { content: ''; position: absolute; bottom: 2px; left: 20%; width: 60%; height: 2px; background: #ffd700; border-radius: 2px; }
+
+    .main { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 10px; }
+    .section-title { font-size: 13px; font-weight: 600; margin: 6px 0 12px; display: flex; align-items: center; gap: 6px; }
+    .section-title span:first-child { width: 3px; height: 14px; background: #e50914; border-radius: 2px; }
+    .movie-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 0 10px; width: 100%; }
+    .movie-card { background: #111; border-radius: 10px; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.5); transition: transform 0.15s; border: 2px solid rgba(255,215,0,0); animation: goldBorderGlow 1.5s infinite ease-in-out; }
+    @keyframes goldBorderGlow { 0% { border-color: rgba(255,215,0,0.2); box-shadow: 0 0 2px rgba(255,215,0,0.2); } 50% { border-color: rgba(255,215,0,0.9); box-shadow: 0 0 10px rgba(255,215,0,0.7); } 100% { border-color: rgba(255,215,0,0.2); box-shadow: 0 0 2px rgba(255,215,0,0.2); } }
+    .movie-card:active { transform: scale(0.96); }
+    .thumb { position: relative; width: 100%; padding-bottom: 150%; background: #1a1a1a; overflow: hidden; }
+    .thumb-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .thumb-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; opacity: 0.4; }
+    .movie-title { padding: 8px 5px; font-size: 10px; font-weight: 500; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #0d0d0d; min-height: 30px; display: flex; align-items: center; justify-content: center; }
+
+    .inline-ad-container { display: flex; flex-direction: column; align-items: center; margin: 8px 0; grid-column: 1 / -1; }
+    .sponsor-label { font-family: 'Courier New', Courier, monospace; font-size: 11px; font-weight: normal; letter-spacing: 1px; color: #FFD966; text-align: center; margin-bottom: 4px; text-transform: uppercase; opacity: 0.8; }
+    .gold-frame { display: inline-block; background: transparent; border: 1.5px solid #FFD700; border-radius: 12px; padding: 4px; box-shadow: 0 0 6px rgba(255,215,0,0.6); animation: glowPulse 1.8s infinite ease-in-out; }
+    @keyframes glowPulse { 0% { border-color: #FFD700; box-shadow: 0 0 4px rgba(255,215,0,0.4); } 50% { border-color: #FFC107; box-shadow: 0 0 14px rgba(255,215,0,0.9); } 100% { border-color: #FFD700; box-shadow: 0 0 4px rgba(255,215,0,0.4); } }
+    .ad-scaled { transform: scale(0.5); transform-origin: center center; }
+    .load-trigger { text-align: center; padding: 24px; color: #aaa; font-size: 11px; }
+    footer { text-align: center; font-size: 8px; color: #444; padding: 20px 0 30px; width: 100%; }
+</style>
+  </head>
+  <body>
+    <div class="app-bar">
+      <div class="logo-row">        <div class="logo">⚡ ONEPLUS</div>
+        <div style="display:flex;gap:8px;">
+          <button class="search-btn" onclick="location.href='search.html'">🔍 Search</button>
+          <button class="search-btn" onclick="location.href='about.html'">📘 About</button>
+        </div>
+      </div>
+      <div class="genre-tabs-wrapper">
+        <div class="genre-scroll">
+          <div class="genre-list" id="genreContainer"></div>
+        </div>
+      </div>
+    </div>
+    <div class="main" id="scrollContainer">
+      <div class="inline-ad-container">
+        <div class="sponsor-label">SPONSOR</div>
+        <div class="gold-frame"><div class="ad-scaled" id="topAdContent"></div></div>
+      </div>
+      <div class="section-title"><span></span><span id="currentGenreLabel">Pilih Genre</span></div>
+      <div id="infiniteContent"></div>
+      <footer>⚡ STATISFILE</footer>
+    </div>
+
+<script>
+(function() {
+    // ============ SAFE STORAGE WRAPPER (Fix Sandbox Error) ============
+    const safeStorage = {
+        get: function(key, fallback) {
+            try { return localStorage.getItem(key) || fallback; }
+            catch(e) { return fallback; }
+        },
+        set: function(key, value) {
+            try { localStorage.setItem(key, value); }
+            catch(e) { /* silent fail */ }
+        },
+        getSession: function(key, fallback) {
+            try { return sessionStorage.getItem(key) || fallback; }
+            catch(e) { return fallback; }
+        },
+        setSession: function(key, value) {
+            try { sessionStorage.setItem(key, value); }
+            catch(e) { /* silent fail */ }
+        }
+    };
+
+    // ============ 4 ID ROLLING POOL ============
+    const ALL_AD_KEYS = [
+        'f2d25fea54209ec308e90169746bc51c',
+        '67c5c939b7d2cb799c1f51042e7174de',
+        '5a7545aac2de615f1900169eca7a09a1',
+        'cb2e18c4dc96b68929a39c17105ed456'    ];
+
+    let adRotationIndex = 0;
+    let adQueue = [];
+    let isProcessingAd = false;
+    let inlineAdCounter = 0;
+    let moviesRenderedSinceLastAd = 0;
+    let currentGenre = "";
+
+    const BASE_URL = 'https://cdn.jsdelivr.net/gh/statisfileindonesia-design';
+    const KEY = "25041995";
+    let currentMovies = [];
+    let renderedCount = 0;
+    let isLoading = false;
+
+    const scrollContainer = document.getElementById('scrollContainer');
+    const contentDiv = document.getElementById('infiniteContent');
+    const genreContainer = document.getElementById('genreContainer');
+    const currentGenreLabel = document.getElementById('currentGenreLabel');
+
+    // ============ AUTO UPDATE CURRENT GENRE ONLY ============
+    function updateCurrentGenreSilent() {
+        if (!currentGenre || isLoading) return;
+        
+        console.log('🔄 Silent update genre:', currentGenre);
+        
+        let repo = currentGenre, isDrachin = false;
+        if (currentGenre === "FTV") repo = "INDONESIA_1";
+        else if (currentGenre === "🐉 DRACHIN") { repo = "DRACHIN"; isDrachin = true; }
+        else if (currentGenre === "ROMANTIC") repo = "TV";
+        
+        fetchAndSaveGenre(currentGenre, repo, isDrachin)
+            .then(function(newData) {
+                safeStorage.set('lastUpdate_' + currentGenre, Date.now());
+                console.log('✅ Updated:', currentGenre, '- Total films:', newData.length);
+            })
+            .catch(function(err) {
+                console.log('⚠️ Update failed:', err.message);
+            });
+    }
+
+    // ============ SEQUENTIAL AD LOADER ============
+    function getNextAdKey() {
+        const key = ALL_AD_KEYS[adRotationIndex % ALL_AD_KEYS.length];
+        adRotationIndex++;
+        return key;
+    }
+
+    function requestAd(containerId) {
+        adQueue.push({ id: containerId, key: getNextAdKey() });        processAdQueue();
+    }
+
+    function processAdQueue() {
+        if (isProcessingAd || adQueue.length === 0) return;
+        isProcessingAd = true;
+
+        const task = adQueue.shift();
+        const el = document.getElementById(task.id);
+        
+        if (el && !el.dataset.loaded) {
+            el.dataset.loaded = 'true';
+            window.atOptions = {
+                'key': task.key,
+                'format': 'iframe',
+                'height': 90,
+                'width': 728,
+                'params': {}
+            };
+            
+            const script = document.createElement('script');
+            script.src = 'https://www.highperformanceformat.com/' + task.key + '/invoke.js';
+            script.async = true;
+            script.type = 'text/javascript';
+            el.appendChild(script);
+        }
+
+        setTimeout(function() {
+            isProcessingAd = false;
+            processAdQueue();
+        }, 800);
+    }
+
+    setTimeout(function() { requestAd('topAdContent'); }, 1200);
+
+    function createInlineAd() {
+        inlineAdCounter++;
+        const adId = 'inlineAd_' + inlineAdCounter;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'inline-ad-container';
+        wrapper.innerHTML = '<div class="sponsor-label">SPONSOR</div><div class="gold-frame"><div class="ad-scaled" id="' + adId + '"></div></div>';
+        
+        setTimeout(function() { requestAd(adId); }, 100);
+        return wrapper;
+    }
+
+    // ============ MOVIE FUNCTIONS ============
+    function xorDecrypt(b64, key) {
+        if (!b64) return '';
+        try {            const bin = atob(b64);
+            let res = '';
+            for (let i = 0; i < bin.length; i++) res += String.fromCharCode(bin.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            return res;
+        } catch(e) { return ''; }
+    }
+    
+    function escapeHtml(s) {
+        return s ? s.replace(/[&<>"']/g, function(m) {
+            return ({
+                '&': '&',
+                '<': '<',
+                '>': '>',
+                '"': '"',
+                "'": '&#039;'
+            })[m];
+        }) : '';
+    }
+
+    function renderBatch() {
+        try {
+            if (!currentMovies.length || isLoading) return;
+            if (renderedCount >= currentMovies.length) return;
+            isLoading = true;
+            
+            setTimeout(function() {
+                try {
+                    const end = Math.min(renderedCount + 9, currentMovies.length);
+                    const batch = currentMovies.slice(renderedCount, end);
+                    
+                    if (batch.length) {
+                        const grid = document.createElement('div');
+                        grid.className = 'movie-grid';
+                        
+                        for (let i = 0; i < batch.length; i++) {
+                            const movie = batch[i];
+                            const card = document.createElement('div');
+                            card.className = 'movie-card';
+                            card.style.animationDelay = (Math.random() * 2).toFixed(2) + 's';
+                            card.onclick = (function(m) {
+                                return function() {
+                                    try {
+                                        if (currentGenre) {
+                                            safeStorage.setSession('lastActiveGenre', currentGenre);
+                                        }
+                                        localStorage.setItem('currentFilm', JSON.stringify({
+                                            title: m.title, cover: m.cover, sinopsis: m.sinopsis, link: m.link
+                                        }));
+                                        window.location.href = 'sinopsis.html';
+                                    } catch(e) { console.error(e); }                                };
+                            })(movie);
+                            
+                            let thumbHtml = '<span class="thumb-placeholder">🎬</span>';
+                            if (movie.cover && movie.cover.startsWith('http')) {
+                                thumbHtml = '<img class="thumb-img" src="' + escapeHtml(movie.cover.replace('http://', 'https://')) + '" loading="lazy" onerror="this.outerHTML=\'<span class=thumb-placeholder>🎬</span>\'">';
+                            }
+                            
+                            card.innerHTML = '<div class="thumb">' + thumbHtml + '</div><div class="movie-title" title="' + escapeHtml(movie.title) + '">' + escapeHtml(movie.title) + '</div>';
+                            grid.appendChild(card);
+                            
+                            moviesRenderedSinceLastAd++;
+                            if (moviesRenderedSinceLastAd >= 3) {
+                                grid.appendChild(createInlineAd());
+                                moviesRenderedSinceLastAd = 0;
+                            }
+                        }
+                        
+                        contentDiv.appendChild(grid);
+                        renderedCount = end;
+                    }
+                    isLoading = false;
+                    checkScroll();
+                } catch(e) { console.error('Render Error:', e); isLoading = false; }
+            }, 50);
+        } catch(e) { console.error('Batch Error:', e); isLoading = false; }
+    }
+    
+    function checkScroll() {
+        if (!scrollContainer || !currentMovies.length) return;
+        if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 350 && !isLoading && renderedCount < currentMovies.length) {
+            renderBatch();
+        }
+    }
+
+    // ============ GENRE & DATA ============
+    async function fetchAndSaveGenre(displayName, backendRepo, isDrachin) {
+        try {
+            const ts = Date.now();
+            const urls = [
+                BASE_URL + '/' + backendRepo + '@main/database.json?v=' + ts,
+                BASE_URL + '/' + backendRepo + '@master/database.json?v=' + ts
+            ];
+            let jsonData = null;
+            for (let u of urls) {
+                try {
+                    const r = await fetch(u);
+                    if (r.ok) { jsonData = await r.json(); break; }
+                } catch(e) {}
+            }            if (!jsonData) throw new Error('Failed to fetch data');
+
+            let movies = jsonData.data || jsonData.movies || jsonData;
+            if (!Array.isArray(movies)) movies = [movies];
+            
+            const decrypted = [];
+            for (let m of movies) {
+                try {
+                    let title, cover, sinopsis, link;
+                    if (isDrachin) {
+                        const encId = m.namae || m.id || m.NAME || m.VIDEO_ID;
+                        if (encId) {
+                            title = m.title || m.TITLE || m.name || 'Video';
+                            cover = xorDecrypt(m.COVER || '', KEY);
+                            sinopsis = xorDecrypt(m.SINOPSIS || '', KEY);
+                            link = 'https://ok.ru/videoembed/' + xorDecrypt(encId, KEY);
+                            decrypted.push({title, cover, sinopsis, link});
+                        }
+                    } else {
+                        title = xorDecrypt(m.NAME || m.NAMAE || '', KEY) || "No title";
+                        cover = xorDecrypt(m.COVER || '', KEY);
+                        sinopsis = xorDecrypt(m.SINOPSIS || '', KEY);
+                        link = xorDecrypt(m.LINK || '', KEY);
+                        if (link) decrypted.push({title, cover, sinopsis, link});
+                    }
+                } catch(e) {}
+            }
+            if (!decrypted.length) throw new Error('No content');
+            
+            // AUTO-SAVE ke database Android
+            if (typeof AndroidDB !== 'undefined' && AndroidDB.smartUpsert) {
+                try {
+                    const toSave = decrypted.map(function(m) {
+                        return {
+                            NAME: m.title,
+                            COVER: m.cover,
+                            SINOPSIS: m.sinopsis,
+                            LINK: m.link
+                        };
+                    });
+                    AndroidDB.smartUpsert(displayName, JSON.stringify(toSave));
+                    console.log('✅ Saved to DB:', displayName);
+                } catch(e) {
+                    console.error('DB save error:', e);
+                }
+            }
+            
+            return decrypted;
+        } catch(err) { throw err; }
+    }
+    async function loadGenre(displayName, element) {
+        try {
+            if (isLoading) return;
+            document.querySelectorAll('.genre').forEach(function(b) { b.classList.remove('active'); });
+            if (element) element.classList.add('active');
+            if (currentGenreLabel) currentGenreLabel.innerText = displayName;
+            
+            currentGenre = displayName;
+            
+            currentMovies = []; 
+            renderedCount = 0; 
+            moviesRenderedSinceLastAd = 0; 
+            inlineAdCounter = 0;
+            adQueue = [];
+            isProcessingAd = false;
+            
+            contentDiv.innerHTML = '<div class="load-trigger">📀 Memuat dari database...</div>';
+            scrollContainer.scrollTop = 0;
+
+            let backendRepo = displayName, isDrachin = false;
+            if (displayName === "FTV") backendRepo = "INDONESIA_1";
+            else if (displayName === "🐉 DRACHIN") { backendRepo = "DRACHIN"; isDrachin = true; }
+            else if (displayName === "ROMANTIC") backendRepo = "TV";
+
+            // Cek cache lokal dulu
+            if (typeof AndroidDB !== 'undefined' && AndroidDB.getMoviesJSON) {
+                try {
+                    const localJson = AndroidDB.getMoviesJSON(displayName);
+                    if (localJson && localJson !== "[]" && localJson.length > 10) {
+                        currentMovies = JSON.parse(localJson);
+                        contentDiv.innerHTML = ''; 
+                        renderBatch();
+                        
+                        // ✅ TRIGGER AUTO-UPDATE SETELAH DATA TAMPIL
+                        setTimeout(updateCurrentGenreSilent, 2000);
+                        return;
+                    }
+                } catch(e) { console.log("Parse local error", e); }
+            }
+
+            contentDiv.innerHTML = '<div class="load-trigger">🔄 Download data ' + displayName + '...</div>';
+            currentMovies = await fetchAndSaveGenre(displayName, backendRepo, isDrachin);
+            renderedCount = 0; contentDiv.innerHTML = ''; renderBatch();
+            
+            // Simpan timestamp
+            safeStorage.set('lastUpdate_' + displayName, Date.now());
+            
+        } catch(err) {
+            contentDiv.innerHTML = '<div class="load-trigger" style="color:#e50914;">❌ Gagal: ' + err.message + '</div>';        }
+    }
+
+    // ============ INIT ============
+    const genres = ["THAI","RUSIA","MALAY","WAR_","HORROR","SKI_FY","KOMEDI","AMERIKA","KARTUN","INDONESIA_II","CHINA","FTV","INDIA","ANIME","🐉 DRACHIN","ROMANTIC"];
+
+    function init() {
+        if (!genreContainer) return;
+        genreContainer.innerHTML = genres.map(function(g) {
+            return '<div class="genre" data-repo="' + g + '">' + g + '</div>';
+        }).join('');
+        
+        document.querySelectorAll('.genre').forEach(function(el) {
+            el.addEventListener('click', function() {
+                playClick();
+                currentGenre = this.dataset.repo;
+                loadGenre(this.dataset.repo, this);
+            });
+        });
+        
+        // Restore genre saat back dari sinopsis
+        const savedGenre = safeStorage.getSession('lastActiveGenre', '');
+        const first = savedGenre 
+            ? genreContainer.querySelector('.genre[data-repo="' + savedGenre + '"]')
+            : genreContainer.querySelector('.genre');
+        
+        if (first) {
+            currentGenre = first.dataset.repo;
+            loadGenre(first.dataset.repo, first);
+        }
+    }
+
+    // Audio click effect
+    let audioCtx = null;
+    function getCtx() {
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            catch(e) { audioCtx = null; }
+        }
+        return audioCtx;
+    }
+    function playClick() {
+        const ctx = getCtx();
+        if (!ctx) return;
+        try {
+            if (ctx.state === 'suspended') ctx.resume();
+            const t = ctx.currentTime;
+            const osc1 = ctx.createOscillator();
+            const g1 = ctx.createGain();
+            osc1.type = 'sine';            osc1.frequency.setValueAtTime(1200, t);
+            osc1.frequency.exponentialRampToValueAtTime(600, t+0.05);
+            g1.gain.setValueAtTime(0.18, t);
+            g1.gain.exponentialRampToValueAtTime(0.001, t+0.06);
+            osc1.connect(g1);
+            g1.connect(ctx.destination);
+            osc1.start(t);
+            osc1.stop(t+0.06);
+        } catch(e) {}
+    }
+
+    scrollContainer.addEventListener('scroll', checkScroll);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+})();
+</script>
+  </body>
+</html>
