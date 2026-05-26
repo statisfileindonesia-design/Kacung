@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -54,6 +55,35 @@
             width: 100%;
             max-height: 180px;
             object-fit: cover;
+        }
+        /* Iklan 1 - di bawah foto header (skala 0.5) */
+        .ad-under-header {
+            text-align: center;
+            margin: 4px auto;
+            background: transparent;
+            border-radius: 8px;
+            padding: 0;
+            overflow: visible;
+        }
+        .ad-under-header .ad-scale {
+            transform: scale(0.5);
+            transform-origin: center top;
+            display: inline-block;
+            margin: -22px -182px -22px -182px;
+        }
+        /* Iklan 2 - paling bawah (STANDAR, tidak diskalakan) */
+        .ad-bottom {
+            text-align: center;
+            margin: 20px auto 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 8px;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .ad-bottom iframe {
+            margin: 0 auto;
+            display: block;
         }
         .search-container {
             padding: 20px 16px;
@@ -183,6 +213,7 @@
             .click-canvas { width: 240px; height: 48px; }
             .bull-head { width: 48px; height: 48px; }
             .header-top { gap: 12px; padding: 10px 16px; }
+            .ad-under-header .ad-scale { margin: -22px -182px -22px -182px; }
         }
     </style>
 </head>
@@ -195,6 +226,22 @@
 
 <div class="hero-banner" id="heroBanner">
     <img src="https://images2.imgbox.com/46/42/SOY3vuDd_o.png" alt="CLICKS Banner">
+</div>
+
+<!-- ========== IKLAN 1: DI BAWAH FOTO HEADER (skala 0.5) ========== -->
+<div class="ad-under-header">
+    <div class="ad-scale">
+        <script>
+            atOptions = {
+                'key' : '020503a552513fd80cd77d0876e363d9',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/020503a552513fd80cd77d0876e363d9/invoke.js"></script>
+    </div>
 </div>
 
 <div class="search-container">
@@ -212,6 +259,20 @@
 
 <div class="result-container" id="resultArea">
     <div class="empty-result">🎬 Ketik judul film, tekan ENTER atau CARI</div>
+</div>
+
+<!-- ========== IKLAN 2: PALING BAWAH (STANDAR, TIDAK DISKALAKAN) ========== -->
+<div class="ad-bottom">
+    <script>
+        atOptions = {
+            'key' : 'a043ace41391bf0e8dfc4e5bda77e363',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/a043ace41391bf0e8dfc4e5bda77e363/invoke.js"></script>
 </div>
 
 <footer>⚡ CLICKS • 8-BIT EDITION • SEMUA VIDEO OK.RU</footer>
@@ -244,11 +305,10 @@
     setInterval(() => { facingLeft = !facingLeft; drawBull(ctxBull, 64, 64, facingLeft); }, 1000);
     drawBull(ctxBull, 64, 64, true);
 
-    // ========== TEKS "CLICKS" PIXEL ART (ATARI 8-BIT) ==========
+    // ========== TEKS "CLICKS" PIXEL ART ==========
     const clickCanvas = document.getElementById('clickCanvas');
     const ctxText = clickCanvas.getContext('2d');
     const ww = 336, hh = 64;
-    // Matriks huruf 7x5 yang benar (S tidak mirip 8)
     const fontMap = {
         'C': [0,1,1,1,0,1,0,0,0,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,1,1,1,0],
         'L': [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,1,1,1,1],
@@ -276,11 +336,9 @@
         const shadowColor = "#5a0000";
         const positions = [10, 56, 102, 148, 194, 240];
         const letters = ['C', 'L', 'I', 'C', 'K', 'S'];
-        // bayangan
         for (let i = 0; i < letters.length; i++) {
             drawPixelLetter(ctxText, positions[i]+2, 14, letters[i], shadowColor);
         }
-        // depan
         for (let i = 0; i < letters.length; i++) {
             drawPixelLetter(ctxText, positions[i], 12, letters[i], mainColor);
         }
@@ -301,20 +359,17 @@
         } catch(e) { return ""; }
     }
 
-    // Daftar genre
     const genreList = [
         "ANIME", "CHINA", "HORROR", "INDIA", "INDONESIA_1", "INDONESIA_II",
         "KARTUN", "KOMEDI", "MALAY", "RUSIA", "SKI_FY", "THAI", "WAR_", "AMERIKA"
     ];
     let allMovies = [];
 
-    // ========== LOAD DATA VIA JSDELIVR (BUKAN RAW GITHUB) ==========
     async function loadAllData() {
         const resultArea = document.getElementById('resultArea');
         resultArea.innerHTML = '<div class="loading">📡 Memuat database via jsDelivr ...</div>';
         const promises = genreList.map(async (genre) => {
             try {
-                // === INI YANG ANDA MINTA: JSDELIVR ===
                 const url = `https://cdn.jsdelivr.net/gh/statisfileindonesia-design/${genre}@main/database.json`;
                 const res = await fetch(url);
                 if (!res.ok) return [];
