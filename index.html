@@ -48,8 +48,7 @@
         .hero-banner {
             width: 100%;
             cursor: pointer;
-            margin: 0;
-            line-height: 0;
+            margin: 0;            line-height: 0;
         }
         .hero-banner img {
             width: 100%;
@@ -98,8 +97,7 @@
             border: 1px solid #e50914;
         }
         .search-box input {
-            flex: 1;
-            background: transparent;
+            flex: 1;            background: transparent;
             border: none;
             color: white;
             font-size: 15px;
@@ -148,8 +146,7 @@
             margin: 16px 0;
             border-left: 5px solid #e50914;
             padding-left: 12px;
-        }
-        .movie-grid {
+        }        .movie-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 14px;
@@ -198,8 +195,7 @@
         .empty-result, .loading {
             text-align: center;
             padding: 50px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 24px;
+            background: rgba(0,0,0,0.5);            border-radius: 24px;
             font-family: monospace;
         }
         footer {
@@ -248,8 +244,7 @@
     <div class="search-box">
         <input type="text" id="searchInput" placeholder="Cari film (misal: Doraemon, Kartun)...">
         <button id="searchBtn">CARI ▶</button>
-    </div>
-</div>
+    </div></div>
 
 <div class="stats" id="statsPanel" style="display: none;">
     <div class="stat-card"><div class="stat-number" id="totalMovies">0</div><div class="stat-label">TOTAL FILM</div></div>
@@ -298,8 +293,7 @@
         ctx.fillStyle = pupil;
         if (lookLeft) { ctx.fillRect(22, 28, 4, 4); ctx.fillRect(38, 28, 4, 4); }
         else { ctx.fillRect(24, 28, 4, 4); ctx.fillRect(40, 28, 4, 4); }
-        ctx.fillStyle = nostril;
-        ctx.fillRect(30, 36, 4, 4); ctx.fillRect(34, 36, 4, 4);
+        ctx.fillStyle = nostril;        ctx.fillRect(30, 36, 4, 4); ctx.fillRect(34, 36, 4, 4);
         ctx.fillStyle = "#3E2723"; ctx.fillRect(28, 44, 8, 2);
     }
     setInterval(() => { facingLeft = !facingLeft; drawBull(ctxBull, 64, 64, facingLeft); }, 1000);
@@ -348,8 +342,7 @@
 
     // ========== XOR DECRYPT ==========
     const XOR_KEY = "25041995";
-    function xorDecrypt(encodedStr, key) {
-        try {
+    function xorDecrypt(encodedStr, key) {        try {
             const binaryStr = atob(encodedStr);
             let result = '';
             for (let i = 0; i < binaryStr.length; i++) {
@@ -365,12 +358,23 @@
     ];
     let allMovies = [];
 
+    // ========== CONFIG AUTO REFRESH 24 JAM ==========
+    const REFRESH_INTERVAL = 24 * 60 * 60 * 1000; // 24 jam dalam ms
+    const STORAGE_KEY = 'clicks_last_data_refresh';
+
     async function loadAllData() {
         const resultArea = document.getElementById('resultArea');
         resultArea.innerHTML = '<div class="loading">📡 Memuat database via jsDelivr ...</div>';
+        
+        // Cek timestamp terakhir
+        const now = Date.now();
+        const lastRefresh = localStorage.getItem(STORAGE_KEY);
+        // Tambahkan parameter cache-busting HANYA jika sudah lewat 24 jam atau pertama kali
+        const cacheBust = (!lastRefresh || (now - parseInt(lastRefresh)) >= REFRESH_INTERVAL) ? `?v=${now}` : '';
+
         const promises = genreList.map(async (genre) => {
             try {
-                const url = `https://cdn.jsdelivr.net/gh/statisfileindonesia-design/${genre}@main/database.json`;
+                const url = `https://cdn.jsdelivr.net/gh/statisfileindonesia-design/${genre}@main/database.json${cacheBust}`;
                 const res = await fetch(url);
                 if (!res.ok) return [];
                 const json = await res.json();
@@ -389,6 +393,10 @@
         });
         const results = await Promise.all(promises);
         allMovies = results.flat();
+
+        // Simpan waktu fetch sukses ke localStorage
+        localStorage.setItem(STORAGE_KEY, Date.now().toString());
+
         const genreLoaded = results.filter(r => r.length > 0).length;
         document.getElementById('totalMovies').innerText = allMovies.length;
         document.getElementById('totalGenres').innerText = genreLoaded;
@@ -430,14 +438,15 @@
         html += `</div>`;
         document.getElementById('resultArea').innerHTML = html;
     }
-    function escapeHtml(s) { return s ? s.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])) : ''; }
+    function escapeHtml(s) { return s ? s.replace(/[&<>]/g, m => ({ '&':'&', '<':'<', '>':'>' }[m])) : ''; }
 
-    const fbUrl = "https://web.facebook.com/search/str/Sri+Wahyuningsih/keywords_search?f=AbrLQRoBi4YEqtwCet0d401qdggpAVASzGj-8Lj-Ca97Rb_8CKzzwPN_OOBOiE2cYPobYDYlvnQwNMeOgNuvn8OvIioxDHIBKePgTBX-G67D5WqzxtyhtYhbLbEL2zgQOgo";
-    document.getElementById('heroBanner').addEventListener('click', () => window.open(fbUrl, '_blank'));
+    const fbUrl = "https://web.facebook.com/search/str/Sri+Wahyuningsih/keywords_search?f=AbrLQRoBi4YEqtwCet0d401qdggpAVASzGj-8Lj-Ca97Rb_8CKzzwPN_OOBOiE2cYPobYDYlvnQwNMeOgNuvn8OvIioxDHIBKePgTBX-G67D5WqzxtyhtYhbLbEL2zgQOgo";    document.getElementById('heroBanner').addEventListener('click', () => window.open(fbUrl, '_blank'));
     document.getElementById('clickCanvas').addEventListener('click', () => window.open(fbUrl, '_blank'));
     document.getElementById('bullCanvas').addEventListener('click', () => window.open(fbUrl, '_blank'));
     document.getElementById('searchBtn').addEventListener('click', searchMovies);
     document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') searchMovies(); });
+    
+    // Inisialisasi otomatis saat halaman dimuat
     loadAllData();
 </script>
 </body>
