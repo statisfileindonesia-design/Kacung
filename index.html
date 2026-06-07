@@ -211,6 +211,101 @@
             .header-top { gap: 12px; padding: 10px 16px; }
             .ad-under-header .ad-scale { margin: -22px -182px -22px -182px; }
         }
+
+        /* ========== EFEK BERKILAU UNTUK SINOPSIS ========== */
+        @keyframes goldBorderPulse {
+            0% { border-color: rgba(255,215,0,0.4); }
+            50% { border-color: rgba(255,215,0,1); }
+            100% { border-color: rgba(255,215,0,0.4); }
+        }
+        @keyframes shimmerGold {
+            0% { transform: rotate(25deg) translateX(-100%); }
+            100% { transform: rotate(25deg) translateX(100%); }
+        }
+        @keyframes textShimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .film-title-shimmer {
+            background: linear-gradient(135deg, #FFD966, #E50914, #FFB347, #FFD966);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: textShimmer 3s linear infinite;
+        }
+
+        /* ========== PLAYER OVERLAY ========== */
+        .player-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 300;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .player-overlay.active {
+            display: flex;
+        }
+        .player-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+        }
+        .player-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Tombol KELUAR - kecil */
+        .player-back-btn {
+            position: fixed;
+            top: 8px;
+            right: 8px;
+            background: rgba(229, 9, 20, 0.9);
+            border: 1.5px solid #ffd700;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 310;
+            backdrop-filter: blur(8px);
+            letter-spacing: 0.3px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .player-back-btn:active {
+            transform: scale(0.94);
+            background: rgba(176, 7, 15, 0.95);
+        }
+
+        /* Iklan Player - skala 0.35, posisi atas */
+        .player-ad {
+            position: fixed;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.35);
+            transform-origin: center top;
+            z-index: 320;
+            display: none;
+        }
+        .player-ad.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -271,6 +366,46 @@
 </div>
 
 <footer>⚡ CLICKS • 8-BIT EDITION • SEMUA VIDEO OK.RU</footer>
+
+<!-- ========== OVERLAY SINOPSIS FULLSCREEN ========== -->
+<div id="sinopsisOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:200;overflow-y:auto;display:none;">
+    <div id="sinopsisBg" style="position:fixed;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;filter:brightness(0.4) blur(3px);z-index:0;"></div>
+    <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 40%, rgba(0,0,0,0.65), rgba(0,0,0,0.9));z-index:1;"></div>
+    <div style="position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 20px 80px;text-align:center;">
+        <h2 id="sinopsisTitle" class="film-title-shimmer" style="font-size:2rem;font-weight:800;margin-bottom:20px;"></h2>
+        <div id="sinopsisCard" style="max-width:700px;width:90%;background:rgba(20,20,30,0.7);backdrop-filter:blur(20px);border-radius:48px;padding:20px;border:2px solid rgba(255,215,0,0.5);margin-bottom:30px;position:relative;overflow:hidden;animation:goldBorderPulse 2s infinite;">
+            <div style="position:absolute;top:-50%;left:-60%;width:200%;height:200%;background:linear-gradient(115deg, transparent 35%, rgba(255,215,0,0.12) 45%, rgba(255,215,0,0.25) 50%, rgba(255,215,0,0.12) 55%, transparent 65%);transform:rotate(25deg);animation:shimmerGold 3s infinite linear;pointer-events:none;border-radius:48px;"></div>
+        </div>
+        
+        <!-- IKLAN SINOPSIS (skala 0.5) -->
+        <div style="width:100%;max-width:728px;margin:0 auto 30px;overflow:visible;text-align:center;padding-top:10px;">
+            <div style="transform:scale(0.5);transform-origin:center top;display:inline-block;margin:-22px -182px -22px -182px;">
+                <script>
+                    atOptions = {
+                        'key' : '76a05d584343f20205cf98c693321509',
+                        'format' : 'iframe',
+                        'height' : 90,
+                        'width' : 728,
+                        'params' : {}
+                    };
+                </script>
+                <script src="https://www.highperformanceformat.com/76a05d584343f20205cf98c693321509/invoke.js"></script>
+            </div>
+        </div>
+        
+        <button id="btnPlaySinopsis" style="background:linear-gradient(135deg, #E50914, #B0070F);border:none;color:white;padding:14px 40px;border-radius:60px;font-size:1.1rem;font-weight:bold;cursor:pointer;margin:10px;">▶ TONTON SEKARANG</button>
+        <button id="btnCloseSinopsis" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);color:white;padding:10px 28px;border-radius:40px;cursor:pointer;">← Kembali</button>
+    </div>
+</div>
+
+<!-- ========== PLAYER OVERLAY (AUTO FULLSCREEN & ROTASI) ========== -->
+<div id="playerOverlay" class="player-overlay">
+    <div class="player-ad" id="playerAd"></div>
+    <button class="player-back-btn" id="btnPlayerBack">✕ KELUAR</button>
+    <div class="player-container" id="playerContainer">
+        <iframe id="videoIframe" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+    </div>
+</div>
 
 <script>
     // ========== BANTENG 8-BIT ==========
@@ -366,10 +501,8 @@
         const resultArea = document.getElementById('resultArea');
         resultArea.innerHTML = '<div class="loading">📡 Memuat database via jsDelivr ...</div>';
         
-        // Cek timestamp terakhir
         const now = Date.now();
         const lastRefresh = localStorage.getItem(STORAGE_KEY);
-        // Tambahkan parameter cache-busting HANYA jika sudah lewat 24 jam atau pertama kali
         const cacheBust = (!lastRefresh || (now - parseInt(lastRefresh)) >= REFRESH_INTERVAL) ? `?v=${now}` : '';
 
         const promises = genreList.map(async (genre) => {
@@ -384,9 +517,11 @@
                         let title = xorDecrypt(item.NAMAE, XOR_KEY);
                         let cover = xorDecrypt(item.COVER, XOR_KEY);
                         let link = xorDecrypt(item.LINK, XOR_KEY);
+                        let sinopsis = "";
+                        if (item.SINOPSIS) sinopsis = xorDecrypt(item.SINOPSIS, XOR_KEY);
                         if (!title) return null;
                         if (cover && !cover.startsWith('http')) cover = "https://placehold.co/300x450?text=CLICKS";
-                        return { title, cover, link, genre };
+                        return { title, cover, link, genre, sinopsis };
                     } catch(e) { return null; }
                 }).filter(m => m);
             } catch(e) { return []; }
@@ -394,7 +529,6 @@
         const results = await Promise.all(promises);
         allMovies = results.flat();
 
-        // Simpan waktu fetch sukses ke localStorage
         localStorage.setItem(STORAGE_KEY, Date.now().toString());
 
         const genreLoaded = results.filter(r => r.length > 0).length;
@@ -430,7 +564,7 @@
         let html = `<div class="section-title">🎬 HASIL: ${results.length} film</div><div class="movie-grid">`;
         for (let m of results) {
             const coverImg = (m.cover && m.cover.startsWith('http')) ? m.cover : "https://placehold.co/300x450?text=CLICKS";
-            html += `<div class="movie-card" onclick="window.open('https://ok.ru/video/${m.link}', '_blank')">
+            html += `<div class="movie-card" onclick="bukaSinopsis('${escapeHtml(m.title)}','${escapeHtml(m.cover)}','${escapeHtml(m.sinopsis||'')}','${m.link}')">
                         <div class="thumbnail"><img class="thumbnail-img" src="${coverImg}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'font-size:32px;\'>🎬</div>'"></div>
                         <div class="movie-info"><div class="movie-title">${escapeHtml(m.title)}</div><div class="genre-badge">🎮 ${m.genre}</div></div>
                     </div>`;
@@ -440,13 +574,124 @@
     }
     function escapeHtml(s) { return s ? s.replace(/[&<>]/g, m => ({ '&':'&', '<':'<', '>':'>' }[m])) : ''; }
 
-    const fbUrl = "https://web.facebook.com/search/str/Sri+Wahyuningsih/keywords_search?f=AbrLQRoBi4YEqtwCet0d401qdggpAVASzGj-8Lj-Ca97Rb_8CKzzwPN_OOBOiE2cYPobYDYlvnQwNMeOgNuvn8OvIioxDHIBKePgTBX-G67D5WqzxtyhtYhbLbEL2zgQOgo";    document.getElementById('heroBanner').addEventListener('click', () => window.open(fbUrl, '_blank'));
+    // ========== FUNGSI SINOPSIS ==========
+    let currentVideoLink = '';
+    function bukaSinopsis(title, cover, sinopsisUrl, link) {
+        currentVideoLink = link;
+        document.getElementById('sinopsisBg').style.backgroundImage = cover && cover.startsWith('http') ? `url('${cover}')` : '';
+        document.getElementById('sinopsisTitle').textContent = title;
+        const card = document.getElementById('sinopsisCard');
+        card.innerHTML = `<div style="position:absolute;top:-50%;left:-60%;width:200%;height:200%;background:linear-gradient(115deg, transparent 35%, rgba(255,215,0,0.12) 45%, rgba(255,215,0,0.25) 50%, rgba(255,215,0,0.12) 55%, transparent 65%);transform:rotate(25deg);animation:shimmerGold 3s infinite linear;pointer-events:none;border-radius:48px;"></div>`;
+        if (sinopsisUrl && sinopsisUrl.match(/^https?:\/\//)) {
+            card.innerHTML += `<img src="${escapeHtml(sinopsisUrl)}" style="max-width:100%;border-radius:24px;position:relative;z-index:1;" onerror="this.style.display='none'">`;
+        } else {
+            card.innerHTML += '<p style="color:#ccc;position:relative;z-index:1;">📝 Sinopsis tidak tersedia.</p>';
+        }
+        document.getElementById('sinopsisOverlay').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    document.getElementById('btnCloseSinopsis').addEventListener('click', function() {
+        document.getElementById('sinopsisOverlay').style.display = 'none';
+        document.body.style.overflow = '';
+    });
+
+    // ========== PLAYER VIDEO AUTO FULLSCREEN & ROTASI ==========
+    document.getElementById('btnPlaySinopsis').addEventListener('click', function() {
+        if (!currentVideoLink) return;
+        bukaPlayer(currentVideoLink);
+    });
+
+    function bukaPlayer(linkId) {
+        const embedUrl = `https://ok.ru/videoembed/${linkId}?autoplay=1&nochat=1&quality=720&volume=100`;
+        const playerOverlay = document.getElementById('playerOverlay');
+        const videoIframe = document.getElementById('videoIframe');
+        const playerAd = document.getElementById('playerAd');
+        
+        // Sembunyikan sinopsis
+        document.getElementById('sinopsisOverlay').style.display = 'none';
+        document.body.style.overflow = 'hidden';
+        
+        // Tampilkan player overlay
+        playerOverlay.classList.add('active');
+        videoIframe.src = embedUrl;
+        
+        // Iklan player (skala 0.35) dengan kunci BARU
+        playerAd.innerHTML = '';
+        playerAd.classList.add('show');
+        setTimeout(() => {
+            const adScript = document.createElement('script');
+            adScript.innerHTML = `
+                atOptions = {
+                    'key' : '76a05d584343f20205cf98c693321509',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            `;
+            const adInvoke = document.createElement('script');
+            adInvoke.src = 'https://www.highperformanceformat.com/76a05d584343f20205cf98c693321509/invoke.js';
+            adInvoke.async = true;
+            playerAd.appendChild(adScript);
+            playerAd.appendChild(adInvoke);
+        }, 500);
+        
+        // Auto fullscreen + landscape
+        const playerContainer = document.getElementById('playerContainer');
+        tryFullscreen(playerContainer);
+        lockOrientation();
+        
+        // Bersihkan saat keluar
+        document.getElementById('btnPlayerBack').onclick = function() {
+            playerOverlay.classList.remove('active');
+            videoIframe.src = '';
+            playerAd.classList.remove('show');
+            playerAd.innerHTML = '';
+            document.body.style.overflow = '';
+            unlockOrientation();
+            document.getElementById('sinopsisOverlay').style.display = 'block';
+        };
+    }
+
+    function tryFullscreen(element) {
+        try {
+            if (element.requestFullscreen) {
+                element.requestFullscreen().catch(() => {});
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+        } catch(e) {}
+    }
+
+    function lockOrientation() {
+        try {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
+            } else if (screen.lockOrientation) {
+                screen.lockOrientation('landscape');
+            }
+        } catch(e) {}
+    }
+
+    function unlockOrientation() {
+        try {
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
+            } else if (screen.unlockOrientation) {
+                screen.unlockOrientation();
+            }
+        } catch(e) {}
+    }
+
+    const fbUrl = "https://web.facebook.com/search/str/Sri+Wahyuningsih/keywords_search?f=AbrLQRoBi4YEqtwCet0d401qdggpAVASzGj-8Lj-Ca97Rb_8CKzzwPN_OOBOiE2cYPobYDYlvnQwNMeOgNuvn8OvIioxDHIBKePgTBX-G67D5WqzxtyhtYhbLbEL2zgQOgo";
+    document.getElementById('heroBanner').addEventListener('click', () => window.open(fbUrl, '_blank'));
     document.getElementById('clickCanvas').addEventListener('click', () => window.open(fbUrl, '_blank'));
     document.getElementById('bullCanvas').addEventListener('click', () => window.open(fbUrl, '_blank'));
     document.getElementById('searchBtn').addEventListener('click', searchMovies);
     document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') searchMovies(); });
     
-    // Inisialisasi otomatis saat halaman dimuat
     loadAllData();
 </script>
 </body>
