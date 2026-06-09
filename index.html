@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CLICKS • Pencarian Film 8-Bit</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: radial-gradient(circle at 20% 30%, #0a0a0a, #000000);
             font-family: 'Courier New', monospace;
@@ -31,62 +26,14 @@
             align-items: center;
             gap: 24px;
         }
-        .bull-head {
-            width: 64px;
-            height: 64px;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated;
-            cursor: pointer;
-        }
-        .click-canvas {
-            width: 336px;
-            height: 64px;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated;
-            cursor: pointer;
-        }
-        .hero-banner {
-            width: 100%;
-            cursor: pointer;
-            margin: 0;            line-height: 0;
-        }
-        .hero-banner img {
-            width: 100%;
-            max-height: 180px;
-            object-fit: cover;
-        }
-        /* Iklan 1 - di bawah foto header (skala 0.5) */
-        .ad-under-header {
-            text-align: center;
-            margin: 4px auto;
-            background: transparent;
-            border-radius: 8px;
-            padding: 0;
-            overflow: visible;
-        }
-        .ad-under-header .ad-scale {
-            transform: scale(0.5);
-            transform-origin: center top;
-            display: inline-block;
-            margin: -22px -182px -22px -182px;
-        }
-        /* Iklan 2 - paling bawah (STANDAR, tidak diskalakan) */
-        .ad-bottom {
-            text-align: center;
-            margin: 20px auto 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
-            padding: 8px;
-            max-width: 100%;
-            overflow-x: auto;
-        }
-        .ad-bottom iframe {
-            margin: 0 auto;
-            display: block;
-        }
-        .search-container {
-            padding: 20px 16px;
-        }
+        .bull-head { width: 64px; height: 64px; image-rendering: crisp-edges; image-rendering: pixelated; cursor: pointer; }
+        .click-canvas { width: 336px; height: 64px; image-rendering: crisp-edges; image-rendering: pixelated; cursor: pointer; }
+        .hero-banner { width: 100%; cursor: pointer; margin: 0; line-height: 0; }
+        .hero-banner img { width: 100%; max-height: 180px; object-fit: cover; }
+        .ad-under-header { text-align: center; margin: 4px auto; background: transparent; border-radius: 8px; padding: 0; overflow: visible; }
+        .ad-under-header .ad-scale { transform: scale(0.5); transform-origin: center top; display: inline-block; margin: -22px -182px -22px -182px; }
+        .ad-bottom { text-align: center; margin: 20px auto 10px; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 8px; max-width: 100%; overflow-x: auto; }
+        .search-container { padding: 20px 16px; }
         .search-box {
             display: flex;
             gap: 10px;
@@ -96,24 +43,8 @@
             padding: 6px 6px 6px 20px;
             border: 1px solid #e50914;
         }
-        .search-box input {
-            flex: 1;            background: transparent;
-            border: none;
-            color: white;
-            font-size: 15px;
-            outline: none;
-            font-family: monospace;
-        }
-        .search-box button {
-            background: #e50914;
-            border: none;
-            color: white;
-            padding: 10px 24px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: monospace;
-        }
+        .search-box input { flex: 1; background: transparent; border: none; color: white; font-size: 15px; outline: none; font-family: monospace; }
+        .search-box button { background: #e50914; border: none; color: white; padding: 10px 24px; border-radius: 50px; cursor: pointer; font-weight: bold; font-family: monospace; }
         .stats {
             display: flex;
             justify-content: space-between;
@@ -123,30 +54,12 @@
             padding: 12px;
             backdrop-filter: blur(4px);
         }
-        .stat-card {
-            text-align: center;
-            flex: 1;
-        }
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffcc00;
-            font-family: 'Press Start 2P', monospace;
-        }
-        .stat-label {
-            font-size: 9px;
-            color: #bbb;
-        }
-        .result-container {
-            padding: 0 16px;
-        }
-        .section-title {
-            font-size: 18px;
-            font-family: 'Press Start 2P', monospace;
-            margin: 16px 0;
-            border-left: 5px solid #e50914;
-            padding-left: 12px;
-        }        .movie-grid {
+        .stat-card { text-align: center; flex: 1; }
+        .stat-number { font-size: 24px; font-weight: bold; color: #ffcc00; font-family: 'Press Start 2P', monospace; }
+        .stat-label { font-size: 9px; color: #bbb; }
+        .result-container { padding: 0 16px; }
+        .section-title { font-size: 18px; font-family: 'Press Start 2P', monospace; margin: 16px 0; border-left: 5px solid #e50914; padding-left: 12px; }
+        .movie-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 14px;
@@ -170,40 +83,12 @@
             justify-content: center;
             overflow: hidden;
         }
-        .thumbnail-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .movie-info {
-            padding: 8px;
-            text-align: center;
-        }
-        .movie-title {
-            font-size: 12px;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-family: monospace;
-        }
-        .genre-badge {
-            font-size: 9px;
-            color: #ffaa00;
-            margin-top: 4px;
-        }
-        .empty-result, .loading {
-            text-align: center;
-            padding: 50px;
-            background: rgba(0,0,0,0.5);            border-radius: 24px;
-            font-family: monospace;
-        }
-        footer {
-            text-align: center;
-            font-size: 10px;
-            color: #555;
-            margin-top: 30px;
-        }
+        .thumbnail-img { width: 100%; height: 100%; object-fit: cover; }
+        .movie-info { padding: 8px; text-align: center; }
+        .movie-title { font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace; }
+        .genre-badge { font-size: 9px; color: #ffaa00; margin-top: 4px; }
+        .empty-result, .loading { text-align: center; padding: 50px; background: rgba(0,0,0,0.5); border-radius: 24px; font-family: monospace; }
+        footer { text-align: center; font-size: 10px; color: #555; margin-top: 30px; }
         @media (max-width: 600px) {
             .movie-grid { grid-template-columns: repeat(2, 1fr); }
             .click-canvas { width: 240px; height: 48px; }
@@ -211,8 +96,6 @@
             .header-top { gap: 12px; padding: 10px 16px; }
             .ad-under-header .ad-scale { margin: -22px -182px -22px -182px; }
         }
-
-        /* ========== EFEK BERKILAU UNTUK SINOPSIS ========== */
         @keyframes goldBorderPulse {
             0% { border-color: rgba(255,215,0,0.4); }
             50% { border-color: rgba(255,215,0,1); }
@@ -234,8 +117,7 @@
             color: transparent;
             animation: textShimmer 3s linear infinite;
         }
-
-        /* ========== PLAYER OVERLAY ========== */
+        /* Player overlay (dipertahankan) */
         .player-overlay {
             position: fixed;
             top: 0;
@@ -249,9 +131,7 @@
             align-items: center;
             flex-direction: column;
         }
-        .player-overlay.active {
-            display: flex;
-        }
+        .player-overlay.active { display: flex; }
         .player-container {
             width: 100%;
             height: 100%;
@@ -266,8 +146,6 @@
             top: 0;
             left: 0;
         }
-
-        /* Tombol KELUAR - kecil */
         .player-back-btn {
             position: fixed;
             top: 8px;
@@ -288,12 +166,7 @@
             align-items: center;
             gap: 3px;
         }
-        .player-back-btn:active {
-            transform: scale(0.94);
-            background: rgba(176, 7, 15, 0.95);
-        }
-
-        /* Iklan Player - skala 0.35, posisi atas */
+        .player-back-btn:active { transform: scale(0.94); background: rgba(176, 7, 15, 0.95); }
         .player-ad {
             position: fixed;
             top: 0px;
@@ -303,9 +176,19 @@
             z-index: 320;
             display: none;
         }
-        .player-ad.show {
-            display: block;
+        .player-ad.show { display: block; }
+        .sinopsis-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 200;
+            overflow-y: auto;
+            display: none;
         }
+        .sinopsis-overlay.active { display: block; }
     </style>
 </head>
 <body>
@@ -319,18 +202,10 @@
     <img src="https://images2.imgbox.com/46/42/SOY3vuDd_o.png" alt="CLICKS Banner">
 </div>
 
-<!-- ========== IKLAN 1: DI BAWAH FOTO HEADER (skala 0.5) ========== -->
+<!-- Iklan 1 -->
 <div class="ad-under-header">
     <div class="ad-scale">
-        <script>
-            atOptions = {
-                'key' : '020503a552513fd80cd77d0876e363d9',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
+        <script> atOptions = { 'key' : '020503a552513fd80cd77d0876e363d9', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} }; </script>
         <script src="https://www.highperformanceformat.com/020503a552513fd80cd77d0876e363d9/invoke.js"></script>
     </div>
 </div>
@@ -339,7 +214,8 @@
     <div class="search-box">
         <input type="text" id="searchInput" placeholder="Cari film (misal: Doraemon, Kartun)...">
         <button id="searchBtn">CARI ▶</button>
-    </div></div>
+    </div>
+</div>
 
 <div class="stats" id="statsPanel" style="display: none;">
     <div class="stat-card"><div class="stat-number" id="totalMovies">0</div><div class="stat-label">TOTAL FILM</div></div>
@@ -351,24 +227,16 @@
     <div class="empty-result">🎬 Ketik judul film, tekan ENTER atau CARI</div>
 </div>
 
-<!-- ========== IKLAN 2: PALING BAWAH (STANDAR, TIDAK DISKALAKAN) ========== -->
+<!-- Iklan 2 -->
 <div class="ad-bottom">
-    <script>
-        atOptions = {
-            'key' : 'a043ace41391bf0e8dfc4e5bda77e363',
-            'format' : 'iframe',
-            'height' : 50,
-            'width' : 320,
-            'params' : {}
-        };
-    </script>
+    <script> atOptions = { 'key' : 'a043ace41391bf0e8dfc4e5bda77e363', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} }; </script>
     <script src="https://www.highperformanceformat.com/a043ace41391bf0e8dfc4e5bda77e363/invoke.js"></script>
 </div>
 
 <footer>⚡ CLICKS • 8-BIT EDITION • SEMUA VIDEO OK.RU</footer>
 
-<!-- ========== OVERLAY SINOPSIS FULLSCREEN ========== -->
-<div id="sinopsisOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:200;overflow-y:auto;display:none;">
+<!-- Overlay sinopsis -->
+<div id="sinopsisOverlay" class="sinopsis-overlay">
     <div id="sinopsisBg" style="position:fixed;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;filter:brightness(0.4) blur(3px);z-index:0;"></div>
     <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 40%, rgba(0,0,0,0.65), rgba(0,0,0,0.9));z-index:1;"></div>
     <div style="position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 20px 80px;text-align:center;">
@@ -376,34 +244,27 @@
         <div id="sinopsisCard" style="max-width:700px;width:90%;background:rgba(20,20,30,0.7);backdrop-filter:blur(20px);border-radius:48px;padding:20px;border:2px solid rgba(255,215,0,0.5);margin-bottom:30px;position:relative;overflow:hidden;animation:goldBorderPulse 2s infinite;">
             <div style="position:absolute;top:-50%;left:-60%;width:200%;height:200%;background:linear-gradient(115deg, transparent 35%, rgba(255,215,0,0.12) 45%, rgba(255,215,0,0.25) 50%, rgba(255,215,0,0.12) 55%, transparent 65%);transform:rotate(25deg);animation:shimmerGold 3s infinite linear;pointer-events:none;border-radius:48px;"></div>
         </div>
-        
-        <!-- IKLAN SINOPSIS (skala 0.5) -->
+        <!-- Iklan sinopsis -->
         <div style="width:100%;max-width:728px;margin:0 auto 30px;overflow:visible;text-align:center;padding-top:10px;">
             <div style="transform:scale(0.5);transform-origin:center top;display:inline-block;margin:-22px -182px -22px -182px;">
-                <script>
-                    atOptions = {
-                        'key' : '76a05d584343f20205cf98c693321509',
-                        'format' : 'iframe',
-                        'height' : 90,
-                        'width' : 728,
-                        'params' : {}
-                    };
-                </script>
+                <script> atOptions = { 'key' : '76a05d584343f20205cf98c693321509', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} }; </script>
                 <script src="https://www.highperformanceformat.com/76a05d584343f20205cf98c693321509/invoke.js"></script>
             </div>
         </div>
-        
         <button id="btnPlaySinopsis" style="background:linear-gradient(135deg, #E50914, #B0070F);border:none;color:white;padding:14px 40px;border-radius:60px;font-size:1.1rem;font-weight:bold;cursor:pointer;margin:10px;">▶ TONTON SEKARANG</button>
         <button id="btnCloseSinopsis" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);color:white;padding:10px 28px;border-radius:40px;cursor:pointer;">← Kembali</button>
     </div>
 </div>
 
-<!-- ========== PLAYER OVERLAY (AUTO FULLSCREEN & ROTASI) ========== -->
+<!-- Player overlay (dengan iframe yang sudah dilindungi sandbox) -->
 <div id="playerOverlay" class="player-overlay">
     <div class="player-ad" id="playerAd"></div>
     <button class="player-back-btn" id="btnPlayerBack">✕ KELUAR</button>
     <div class="player-container" id="playerContainer">
-        <iframe id="videoIframe" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        <iframe id="videoIframe" 
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-popups-to-escape-sandbox"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture" 
+                allowfullscreen></iframe>
     </div>
 </div>
 
@@ -428,13 +289,13 @@
         ctx.fillStyle = pupil;
         if (lookLeft) { ctx.fillRect(22, 28, 4, 4); ctx.fillRect(38, 28, 4, 4); }
         else { ctx.fillRect(24, 28, 4, 4); ctx.fillRect(40, 28, 4, 4); }
-        ctx.fillStyle = nostril;        ctx.fillRect(30, 36, 4, 4); ctx.fillRect(34, 36, 4, 4);
+        ctx.fillStyle = nostril; ctx.fillRect(30, 36, 4, 4); ctx.fillRect(34, 36, 4, 4);
         ctx.fillStyle = "#3E2723"; ctx.fillRect(28, 44, 8, 2);
     }
     setInterval(() => { facingLeft = !facingLeft; drawBull(ctxBull, 64, 64, facingLeft); }, 1000);
     drawBull(ctxBull, 64, 64, true);
 
-    // ========== TEKS "CLICKS" PIXEL ART ==========
+    // ========== TEKS CLICKS PIXEL ==========
     const clickCanvas = document.getElementById('clickCanvas');
     const ctxText = clickCanvas.getContext('2d');
     const ww = 336, hh = 64;
@@ -477,7 +338,8 @@
 
     // ========== XOR DECRYPT ==========
     const XOR_KEY = "25041995";
-    function xorDecrypt(encodedStr, key) {        try {
+    function xorDecrypt(encodedStr, key) {
+        try {
             const binaryStr = atob(encodedStr);
             let result = '';
             for (let i = 0; i < binaryStr.length; i++) {
@@ -493,14 +355,12 @@
     ];
     let allMovies = [];
 
-    // ========== CONFIG AUTO REFRESH 24 JAM ==========
-    const REFRESH_INTERVAL = 24 * 60 * 60 * 1000; // 24 jam dalam ms
+    const REFRESH_INTERVAL = 24 * 60 * 60 * 1000;
     const STORAGE_KEY = 'clicks_last_data_refresh';
 
     async function loadAllData() {
         const resultArea = document.getElementById('resultArea');
         resultArea.innerHTML = '<div class="loading">📡 Memuat database via jsDelivr ...</div>';
-        
         const now = Date.now();
         const lastRefresh = localStorage.getItem(STORAGE_KEY);
         const cacheBust = (!lastRefresh || (now - parseInt(lastRefresh)) >= REFRESH_INTERVAL) ? `?v=${now}` : '';
@@ -528,9 +388,7 @@
         });
         const results = await Promise.all(promises);
         allMovies = results.flat();
-
         localStorage.setItem(STORAGE_KEY, Date.now().toString());
-
         const genreLoaded = results.filter(r => r.length > 0).length;
         document.getElementById('totalMovies').innerText = allMovies.length;
         document.getElementById('totalGenres').innerText = genreLoaded;
@@ -572,9 +430,9 @@
         html += `</div>`;
         document.getElementById('resultArea').innerHTML = html;
     }
-    function escapeHtml(s) { return s ? s.replace(/[&<>]/g, m => ({ '&':'&', '<':'<', '>':'>' }[m])) : ''; }
+    function escapeHtml(s) { return s ? s.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])) : ''; }
 
-    // ========== FUNGSI SINOPSIS ==========
+    // ========== SINOPSIS ==========
     let currentVideoLink = '';
     function bukaSinopsis(title, cover, sinopsisUrl, link) {
         currentVideoLink = link;
@@ -587,35 +445,32 @@
         } else {
             card.innerHTML += '<p style="color:#ccc;position:relative;z-index:1;">📝 Sinopsis tidak tersedia.</p>';
         }
-        document.getElementById('sinopsisOverlay').style.display = 'block';
+        document.getElementById('sinopsisOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
     document.getElementById('btnCloseSinopsis').addEventListener('click', function() {
-        document.getElementById('sinopsisOverlay').style.display = 'none';
+        document.getElementById('sinopsisOverlay').classList.remove('active');
         document.body.style.overflow = '';
     });
 
-    // ========== PLAYER VIDEO AUTO FULLSCREEN & ROTASI ==========
-    document.getElementById('btnPlaySinopsis').addEventListener('click', function() {
-        if (!currentVideoLink) return;
-        bukaPlayer(currentVideoLink);
-    });
-
+    // ========== PLAYER VIDEO ANTI FRAME BUSTING (dengan sandbox) ==========
     function bukaPlayer(linkId) {
-        const embedUrl = `https://ok.ru/videoembed/${linkId}?autoplay=1&nochat=1&quality=720&volume=100`;
         const playerOverlay = document.getElementById('playerOverlay');
         const videoIframe = document.getElementById('videoIframe');
         const playerAd = document.getElementById('playerAd');
         
-        // Sembunyikan sinopsis
-        document.getElementById('sinopsisOverlay').style.display = 'none';
+        // Tutup sinopsis
+        document.getElementById('sinopsisOverlay').classList.remove('active');
         document.body.style.overflow = 'hidden';
         
-        // Tampilkan player overlay
-        playerOverlay.classList.add('active');
+        // Siapkan iframe dengan sandbox (tanpa allow-top-navigation)
+        videoIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms allow-popups-to-escape-sandbox');
+        const embedUrl = `https://ok.ru/videoembed/${linkId}?autoplay=1&nochat=1&quality=720&volume=100`;
         videoIframe.src = embedUrl;
         
-        // Iklan player (skala 0.35) dengan kunci BARU
+        playerOverlay.classList.add('active');
+        
+        // Iklan player
         playerAd.innerHTML = '';
         playerAd.classList.add('show');
         setTimeout(() => {
@@ -636,12 +491,12 @@
             playerAd.appendChild(adInvoke);
         }, 500);
         
-        // Auto fullscreen + landscape
+        // Auto fullscreen landscape
         const playerContainer = document.getElementById('playerContainer');
         tryFullscreen(playerContainer);
         lockOrientation();
         
-        // Bersihkan saat keluar
+        // Tombol keluar
         document.getElementById('btnPlayerBack').onclick = function() {
             playerOverlay.classList.remove('active');
             videoIframe.src = '';
@@ -649,42 +504,34 @@
             playerAd.innerHTML = '';
             document.body.style.overflow = '';
             unlockOrientation();
-            document.getElementById('sinopsisOverlay').style.display = 'block';
         };
     }
-
+    
     function tryFullscreen(element) {
         try {
-            if (element.requestFullscreen) {
-                element.requestFullscreen().catch(() => {});
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
-            }
+            if (element.requestFullscreen) element.requestFullscreen().catch(()=>{});
+            else if (element.webkitRequestFullscreen) element.webkitRequestFullscreen();
+            else if (element.msRequestFullscreen) element.msRequestFullscreen();
         } catch(e) {}
     }
-
     function lockOrientation() {
         try {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(() => {});
-            } else if (screen.lockOrientation) {
-                screen.lockOrientation('landscape');
-            }
+            if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
+            else if (screen.lockOrientation) screen.lockOrientation('landscape');
         } catch(e) {}
     }
-
     function unlockOrientation() {
         try {
-            if (screen.orientation && screen.orientation.unlock) {
-                screen.orientation.unlock();
-            } else if (screen.unlockOrientation) {
-                screen.unlockOrientation();
-            }
+            if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
+            else if (screen.unlockOrientation) screen.unlockOrientation();
         } catch(e) {}
     }
-
+    
+    document.getElementById('btnPlaySinopsis').addEventListener('click', function() {
+        if (currentVideoLink) bukaPlayer(currentVideoLink);
+    });
+    
+    // Event untuk banner
     const fbUrl = "https://web.facebook.com/search/str/Sri+Wahyuningsih/keywords_search?f=AbrLQRoBi4YEqtwCet0d401qdggpAVASzGj-8Lj-Ca97Rb_8CKzzwPN_OOBOiE2cYPobYDYlvnQwNMeOgNuvn8OvIioxDHIBKePgTBX-G67D5WqzxtyhtYhbLbEL2zgQOgo";
     document.getElementById('heroBanner').addEventListener('click', () => window.open(fbUrl, '_blank'));
     document.getElementById('clickCanvas').addEventListener('click', () => window.open(fbUrl, '_blank'));
